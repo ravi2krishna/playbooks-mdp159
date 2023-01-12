@@ -1,0 +1,62 @@
+---
+  - name: Copy On CentOS
+    copy:
+      src: os.html
+      dest: /var/www/html/centos.html
+    when: ansible_distribution == "CentOS" 
+
+  - name: Copy On Amazon
+    copy:
+      src: os.html
+      dest: /var/www/html/amazon.html
+    when: ansible_distribution == "Amazon" 
+
+  - name: Copy On Ubuntu
+    copy:
+      src: os.html
+      dest: /var/www/html/ubuntu.html
+    when: ansible_distribution == "Ubuntu" 
+
+  - name: Copy On CentOS
+    template:
+      src: dynamic.j2
+      dest: /var/www/html/centos.html
+    when: ansible_distribution == "CentOS" 
+
+  - name: Copy On Amazon
+    template:
+      src: dynamic.j2
+      dest: /var/www/html/amazon.html
+    when: ansible_distribution == "Amazon" 
+
+  - name: Copy On Ubuntu
+    template:
+      src: dynamic.j2
+      dest: /var/www/html/ubuntu.html
+    when: ansible_distribution == "Ubuntu" 
+
+  - name: Copy config to centos httpd
+    template:
+      src: httpd.j2
+      dest: /etc/httpd/conf/httpd.conf
+    when: ansible_distribution == "CentOS" 
+    notify:
+    - Restart HTTPD
+
+  - name: Set Permissive For HTTPD
+    selinux:
+      policy: targeted
+      state: permissive
+    when: ansible_distribution == "CentOS" 
+
+
+  - name: Copy config to ubuntu apache2
+    template:
+      src: ports.j2
+      dest: /etc/apache2/ports.conf
+    when: ansible_distribution == "Ubuntu" 
+    notify:
+    - Restart APACHE2
+
+...
+
